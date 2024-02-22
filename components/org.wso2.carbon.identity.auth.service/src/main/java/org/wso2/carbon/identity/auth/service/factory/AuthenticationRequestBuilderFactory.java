@@ -23,6 +23,7 @@ import org.apache.catalina.connector.Request;
 import org.apache.catalina.connector.Response;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.tomcat.util.http.MimeHeaders;
 import org.wso2.carbon.identity.auth.service.AuthenticationRequest;
 import org.wso2.carbon.identity.auth.service.exception.AuthClientException;
 import org.wso2.carbon.identity.auth.service.util.AuthConfigurationUtil;
@@ -69,11 +70,24 @@ public class AuthenticationRequestBuilderFactory extends AbstractIdentityHandler
             authenticationRequestBuilder.addAttribute(attributeName, request.getAttribute(attributeName));
         }
         authenticationRequestBuilder.addAttribute(HTTPConstants.MC_HTTP_SERVLETREQUEST, request);
+
+        //
+        MimeHeaders headers = request.getCoyoteRequest().getMimeHeaders();
+        for ( int i = 0; i < headers.size(); i++ ) {
+            String headerName = headers.getName(i).toString();
+            String headerValue = headers.getValue(i).toString();
+            authenticationRequestBuilder.addHeader(headerName, headerValue);
+        }
+        //
+
+        /*
         Enumeration<String> headerNames = request.getHeaderNames();
         while ( headerNames.hasMoreElements() ) {
             String headerName = headerNames.nextElement();
             authenticationRequestBuilder.addHeader(headerName, request.getHeader(headerName));
         }
+        */
+
         Cookie[] cookies = request.getCookies();
         if ( cookies != null ) {
             for ( Cookie cookie : cookies ) {
