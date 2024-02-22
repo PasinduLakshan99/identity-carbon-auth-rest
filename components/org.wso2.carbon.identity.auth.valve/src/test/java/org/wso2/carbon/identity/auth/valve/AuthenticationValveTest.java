@@ -215,6 +215,7 @@ public class AuthenticationValveTest extends PowerMockTestCase {
         IteratorEnumeration iteratorEnumeration = new IteratorEnumeration();
         iteratorEnumeration.setIterator(headers.iterator());
         when(request.getHeaderNames()).thenReturn(iteratorEnumeration);
+        when(request.getCoyoteRequest()).thenReturn(new org.apache.coyote.Request());
         when(authenticationManager.getSecuredResource(new ResourceConfigKey(DUMMY_RESOURCE, HTTP_METHOD_POST)))
                 .thenReturn(securedResourceConfig);
         when(authHandlerManager.getRequestBuilder(request, response)).
